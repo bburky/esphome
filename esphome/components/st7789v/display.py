@@ -138,8 +138,8 @@ def validate_st7789v(config):
         raise cv.Invalid(
             f"{CONF_HEIGHT}, {CONF_WIDTH}, {CONF_OFFSET_HEIGHT} and {CONF_OFFSET_WIDTH} must all be specified"
         )
-    if CONF_DC_PIN not in config or CONF_RESET_PIN not in config:
-        raise cv.Invalid(f"both {CONF_DC_PIN} and {CONF_RESET_PIN} must be specified")
+    if CONF_DC_PIN not in config:
+        raise cv.Invalid(f"both {CONF_DC_PIN} must be specified")
 
     return config
 
@@ -186,8 +186,9 @@ async def to_code(config):
     dc = await cg.gpio_pin_expression(config[CONF_DC_PIN])
     cg.add(var.set_dc_pin(dc))
 
-    reset = await cg.gpio_pin_expression(config[CONF_RESET_PIN])
-    cg.add(var.set_reset_pin(reset))
+    if CONF_RESET_PIN in config and config[CONF_RESET_PIN]:
+        reset = await cg.gpio_pin_expression(config[CONF_RESET_PIN])
+        cg.add(var.set_reset_pin(reset))
 
     if CONF_BACKLIGHT_PIN in config and config[CONF_BACKLIGHT_PIN]:
         bl = await cg.gpio_pin_expression(config[CONF_BACKLIGHT_PIN])

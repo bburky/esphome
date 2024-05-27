@@ -207,6 +207,10 @@ void ST7789V::init_reset_() {
     // Wake up
     this->reset_pin_->digital_write(true);
     delay(5);
+  } else {
+    this->enable();
+    this->write_byte(ST7789_SWRESET);
+    this->disable();
   }
 }
 
